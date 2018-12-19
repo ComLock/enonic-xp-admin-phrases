@@ -52,8 +52,21 @@ export function htmlResponse({
 			main {
 				padding: 15px;
 			}
+			fieldset {
+				display: inline-block;
+			}
 			label {
-				display: block;
+				display: table-row;
+			}
+			label span {
+				padding-right: 5px;
+			}
+			label input,span {
+				display: table-cell
+			}
+			button {
+				margin-top: 5px;
+				float: right;
 			}
 			table {
 				border-collapse: collapse;
@@ -70,8 +83,10 @@ export function htmlResponse({
 	<body>
 		<nav>
 			<ul>
-				<li><a class="${relPath === '' ? 'current' : ''}" href="${TOOL_PATH}">Phrases</a></li>
 				<li><a class="${relPath.startsWith('/languages') ? 'current' : ''}" href="${TOOL_PATH}/languages">Languages</a></li>
+				<li><a class="${relPath.startsWith('/countries') ? 'current' : ''}" href="${TOOL_PATH}/countries">Countries</a></li>
+				<li><a class="${relPath.startsWith('/locales') ? 'current' : ''}" href="${TOOL_PATH}/locales">Locales</a></li>
+				<li><a class="${relPath === '' ? 'current' : ''}" href="${TOOL_PATH}">Phrases</a></li>
 			</ul>
 		</nav>
 		<main>${main}</main>

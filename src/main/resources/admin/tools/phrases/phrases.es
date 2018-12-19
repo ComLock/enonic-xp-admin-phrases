@@ -1,12 +1,16 @@
+import {toStr} from '/lib/enonic/util';
 import newRouter from '/lib/router';
 import {hasRole} from '/lib/xp/auth';
 
 import {ROLE_PHRASES_ADMIN, TOOL_PATH} from '/admin/tools/phrases/constants';
 
-import {createLanguageFormPage} from '/admin/tools/phrases/languages/createLanguageFormPage';
+import {listCountriesPage} from '/admin/tools/phrases/countries/listCountriesPage';
+
+import {handleLanguagePost} from '/admin/tools/phrases/languages/handleLanguagePost';
 import {listLanguagesPage} from '/admin/tools/phrases/languages/listLanguagesPage';
 
-import {createPhraseFormPage} from '/admin/tools/phrases/phrases/createPhraseFormPage';
+import {listLocalesPage} from '/admin/tools/phrases/locales/listLocalesPage';
+
 import {listPhrasesPage} from '/admin/tools/phrases/phrases/listPhrasesPage';
 
 
@@ -14,14 +18,20 @@ const router = newRouter();
 
 
 router.filter((req) => {
+	//log.info(toStr({method: req.method}));
 	if (!hasRole(ROLE_PHRASES_ADMIN)) { return { status: 401 }; }
-	const relPath = req.path.replace(TOOL_PATH, '');
+	const relPath = req.path.replace(TOOL_PATH, ''); log.info(toStr({relPath}));
 	if (!relPath) { return listPhrasesPage(req); }
 
-	if (relPath.startsWith('/languages/createform')) { return createLanguageFormPage(req); }
-	if (relPath.startsWith('/languages')) { return listLanguagesPage(req); }
+	if (relPath.startsWith('/countries')) { return listCountriesPage(req); }
 
-	if (relPath.startsWith('/phrases/createform')) { return createPhraseFormPage(req); }
+	if (relPath.startsWith('/languages')) {
+		if (req.method === 'POST') { return handleLanguagePost(req); }
+		return listLanguagesPage(req);
+	}
+
+	if (relPath.startsWith('/locales')) { return listLocalesPage(req); }
+
 	//if (relPath.startsWith('/phrases')) { return listPhrasesPage(req); }
 
 	return listPhrasesPage(req);
