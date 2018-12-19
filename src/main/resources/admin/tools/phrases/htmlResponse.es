@@ -86,7 +86,7 @@ export function htmlResponse({
 				<li><a class="${relPath.startsWith('/languages') ? 'current' : ''}" href="${TOOL_PATH}/languages">Languages</a></li>
 				<li><a class="${relPath.startsWith('/countries') ? 'current' : ''}" href="${TOOL_PATH}/countries">Countries</a></li>
 				<li><a class="${relPath.startsWith('/locales') ? 'current' : ''}" href="${TOOL_PATH}/locales">Locales</a></li>
-				<li><a class="${relPath === '' ? 'current' : ''}" href="${TOOL_PATH}">Phrases</a></li>
+				<li><a class="${(relPath === '' || relPath.startsWith('/phrases')) ? 'current' : ''}" href="${TOOL_PATH}">Phrases</a></li>
 			</ul>
 		</nav>
 		<main>${main}</main>
