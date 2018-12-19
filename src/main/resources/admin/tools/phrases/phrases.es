@@ -4,6 +4,7 @@ import {hasRole} from '/lib/xp/auth';
 
 import {ROLE_PHRASES_ADMIN, TOOL_PATH} from '/admin/tools/phrases/constants';
 
+import {handleCountryPost} from '/admin/tools/phrases/countries/handleCountryPost';
 import {listCountriesPage} from '/admin/tools/phrases/countries/listCountriesPage';
 
 import {handleLanguagePost} from '/admin/tools/phrases/languages/handleLanguagePost';
@@ -23,7 +24,10 @@ router.filter((req) => {
 	const relPath = req.path.replace(TOOL_PATH, ''); log.info(toStr({relPath}));
 	if (!relPath) { return listPhrasesPage(req); }
 
-	if (relPath.startsWith('/countries')) { return listCountriesPage(req); }
+	if (relPath.startsWith('/countries')) {
+		if (req.method === 'POST') { return handleCountryPost(req); }
+		return listCountriesPage(req);
+	}
 
 	if (relPath.startsWith('/languages')) {
 		if (req.method === 'POST') { return handleLanguagePost(req); }

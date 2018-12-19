@@ -1,10 +1,10 @@
 //import {toStr} from '/lib/enonic/util';
 import {connect} from '/lib/xp/node';
-import {BRANCH_ID, CT_LANGUAGE, REPO_ID} from '/admin/tools/phrases/constants';
-import {listLanguagesPage} from '/admin/tools/phrases/languages/listLanguagesPage';
+import {BRANCH_ID, CT_COUNTRY, REPO_ID} from '/admin/tools/phrases/constants';
+import {listCountriesPage} from '/admin/tools/phrases/countries/listCountriesPage';
 
 
-export function handleLanguagePost({
+export function handleCountryPost({
 	params: {
 		code,
 		englishName,
@@ -17,7 +17,7 @@ export function handleLanguagePost({
 		branch: BRANCH_ID
 	});
 	const createNodeParams = {
-		_parentPath: '/languages',
+		_parentPath: '/countries',
 		_name: code,
 		//_indexConfig: {default: 'byType'},
 		_inheritsPermissions: true,
@@ -25,7 +25,7 @@ export function handleLanguagePost({
 		//displayName: englishName,
 		englishName,
 		localizedName,
-		type: CT_LANGUAGE
+		type: CT_COUNTRY
 	};
 	const node = connection.create(createNodeParams);
 	connection.refresh();
@@ -33,12 +33,12 @@ export function handleLanguagePost({
 	let status = 200;
 	const messages = [];
 	if (node) {
-		messages.push(`Created language: ${englishName}`);
+		messages.push(`Created country: ${englishName}`);
 	} else {
-		messages.push(`Failed to create language: ${englishName}!`);
+		messages.push(`Failed to create country: ${englishName}!`);
 		status = 500;
 	}
-	return listLanguagesPage({
+	return listCountriesPage({
 		path
 	}, {
 		messages,

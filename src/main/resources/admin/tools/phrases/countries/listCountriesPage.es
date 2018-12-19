@@ -2,12 +2,12 @@
 import {connect} from '/lib/xp/node';
 
 import {
-	BRANCH_ID, CT_LANGUAGE, REPO_ID, TOOL_PATH
+	BRANCH_ID, CT_COUNTRY, REPO_ID, TOOL_PATH
 } from '/admin/tools/phrases/constants';
 import {htmlResponse} from '/admin/tools/phrases/htmlResponse';
 
 
-export function listLanguagesPage(
+export function listCountriesPage(
 	{path} = {},
 	{messages, status} = {}
 ) {
@@ -22,15 +22,15 @@ export function listLanguagesPage(
 				must: [{
 					hasValue: {
 						field: 'type',
-						values: [CT_LANGUAGE]
+						values: [CT_COUNTRY]
 					}
 				}]
 			}
 		},
-		query: '', //"_parentPath = '/languages'",
+		query: '', //"_parentPath = '/countries'",
 		sort: '_name ASC'
 	});
-	const languageRows = queryRes.hits.map((hit) => {
+	const countryRows = queryRes.hits.map((hit) => {
 		const {_name: code, englishName, localizedName} = connection.get(hit.id);
 		return `<tr>
 	<td>${code}</td>
@@ -40,25 +40,25 @@ export function listLanguagesPage(
 	}).join('\n');
 
 	return htmlResponse({
-		title: 'Languages',
+		title: 'Countries',
 		path,
-		main: `<form action="${TOOL_PATH}/languages" autocomplete="off" method="POST">
+		main: `<form action="${TOOL_PATH}/countries" autocomplete="off" method="POST">
 	<fieldset>
-		<legend>Add language</legend>
+		<legend>Add country</legend>
 		<label>
-			<span>Language code (ISO 639-1)</span>
+			<span>Country code (ISO 3166-1 Alpha-2)</span>
 			<input name="code" type="text"/>
 		</label>
 		<label>
-			<span>English name of Language</span>
+			<span>English name of Country</span>
 			<input name="englishName" type="text"/>
 		</label>
 		<label>
-			<span>Localized name of Language</span>
+			<span>Localized name of Country</span>
 			<input name="localizedName" type="text"/>
 		</label>
-		<a href="https://www.loc.gov/standards/iso639-2/php/code_list.php" target="_blank">ISO 639 Language Code List</a>
-		<button type="submit">Add language</button>
+		<a href="https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes" target="_blank">List of ISO 3166 country codes</a>
+		<button type="submit">Add country</button>
 	</fieldset>
 </form>
 <table>
@@ -70,7 +70,7 @@ export function listLanguagesPage(
 		</tr>
 	</thead>
 	<tbody>
-		${languageRows}
+		${countryRows}
 	</tbody>
 </table>`,
 		messages,
