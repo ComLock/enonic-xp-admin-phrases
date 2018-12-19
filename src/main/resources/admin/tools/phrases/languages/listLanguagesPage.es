@@ -1,44 +1,14 @@
 //import {toStr} from '/lib/enonic/util';
-import {connect} from '/lib/xp/node';
 
-import {
-	BRANCH_ID, CT_LANGUAGE, REPO_ID, TOOL_PATH
-} from '/admin/tools/phrases/constants';
+import {TOOL_PATH} from '/admin/tools/phrases/constants';
 import {htmlResponse} from '/admin/tools/phrases/htmlResponse';
+import {getLanguages} from '/admin/tools/phrases/languages/getLanguages';
 
 
 export function listLanguagesPage(
 	{path} = {},
 	{messages, status} = {}
 ) {
-	const connection = connect({
-		repoId: REPO_ID,
-		branch: BRANCH_ID
-	});
-	const queryRes = connection.query({
-		count: -1,
-		filters: {
-			boolean: {
-				must: [{
-					hasValue: {
-						field: 'type',
-						values: [CT_LANGUAGE]
-					}
-				}]
-			}
-		},
-		query: '', //"_parentPath = '/languages'",
-		sort: '_name ASC'
-	});
-	const languageRows = queryRes.hits.map((hit) => {
-		const {_name: code, englishName, localizedName} = connection.get(hit.id);
-		return `<tr>
-	<td>${code}</td>
-	<td>${englishName}</td>
-	<td>${localizedName}</td>
-</tr>`;
-	}).join('\n');
-
 	return htmlResponse({
 		title: 'Languages',
 		path,
@@ -70,7 +40,11 @@ export function listLanguagesPage(
 		</tr>
 	</thead>
 	<tbody>
-		${languageRows}
+		${getLanguages().map(({code, englishName, localizedName}) => `<tr>
+	<td>${code}</td>
+	<td>${englishName}</td>
+	<td>${localizedName}</td>
+	</tr>`).join('\n')}
 	</tbody>
 </table>`,
 		messages,

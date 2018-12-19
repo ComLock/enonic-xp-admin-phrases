@@ -1,4 +1,4 @@
-import {toStr} from '/lib/enonic/util';
+//import {toStr} from '/lib/enonic/util';
 import newRouter from '/lib/router';
 import {hasRole} from '/lib/xp/auth';
 
@@ -10,6 +10,7 @@ import {listCountriesPage} from '/admin/tools/phrases/countries/listCountriesPag
 import {handleLanguagePost} from '/admin/tools/phrases/languages/handleLanguagePost';
 import {listLanguagesPage} from '/admin/tools/phrases/languages/listLanguagesPage';
 
+import {handleLocalePost} from '/admin/tools/phrases/locales/handleLocalePost';
 import {listLocalesPage} from '/admin/tools/phrases/locales/listLocalesPage';
 
 import {listPhrasesPage} from '/admin/tools/phrases/phrases/listPhrasesPage';
@@ -21,7 +22,7 @@ const router = newRouter();
 router.filter((req) => {
 	//log.info(toStr({method: req.method}));
 	if (!hasRole(ROLE_PHRASES_ADMIN)) { return { status: 401 }; }
-	const relPath = req.path.replace(TOOL_PATH, ''); log.info(toStr({relPath}));
+	const relPath = req.path.replace(TOOL_PATH, ''); //log.info(toStr({relPath}));
 	if (!relPath) { return listPhrasesPage(req); }
 
 	if (relPath.startsWith('/countries')) {
@@ -34,7 +35,10 @@ router.filter((req) => {
 		return listLanguagesPage(req);
 	}
 
-	if (relPath.startsWith('/locales')) { return listLocalesPage(req); }
+	if (relPath.startsWith('/locales')) {
+		if (req.method === 'POST') { return handleLocalePost(req); }
+		return listLocalesPage(req);
+	}
 
 	//if (relPath.startsWith('/phrases')) { return listPhrasesPage(req); }
 

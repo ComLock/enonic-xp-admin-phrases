@@ -1,44 +1,14 @@
 //import {toStr} from '/lib/enonic/util';
-import {connect} from '/lib/xp/node';
 
-import {
-	BRANCH_ID, CT_COUNTRY, REPO_ID, TOOL_PATH
-} from '/admin/tools/phrases/constants';
+import {TOOL_PATH} from '/admin/tools/phrases/constants';
 import {htmlResponse} from '/admin/tools/phrases/htmlResponse';
+import {getCountries} from '/admin/tools/phrases/countries/getCountries';
 
 
 export function listCountriesPage(
 	{path} = {},
 	{messages, status} = {}
 ) {
-	const connection = connect({
-		repoId: REPO_ID,
-		branch: BRANCH_ID
-	});
-	const queryRes = connection.query({
-		count: -1,
-		filters: {
-			boolean: {
-				must: [{
-					hasValue: {
-						field: 'type',
-						values: [CT_COUNTRY]
-					}
-				}]
-			}
-		},
-		query: '', //"_parentPath = '/countries'",
-		sort: '_name ASC'
-	});
-	const countryRows = queryRes.hits.map((hit) => {
-		const {_name: code, englishName, localizedName} = connection.get(hit.id);
-		return `<tr>
-	<td>${code}</td>
-	<td>${englishName}</td>
-	<td>${localizedName}</td>
-</tr>`;
-	}).join('\n');
-
 	return htmlResponse({
 		title: 'Countries',
 		path,
@@ -70,7 +40,11 @@ export function listCountriesPage(
 		</tr>
 	</thead>
 	<tbody>
-		${countryRows}
+		${getCountries().map(({code, englishName, localizedName}) => `<tr>
+	<td>${code}</td>
+	<td>${englishName}</td>
+	<td>${localizedName}</td>
+	</tr>`).join('\n')}
 	</tbody>
 </table>`,
 		messages,
