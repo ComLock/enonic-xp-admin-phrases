@@ -1,6 +1,7 @@
 import {createRole} from '/lib/xp/auth';
-import {sanitize} from '/lib/xp/common';
 import {run} from '/lib/xp/context';
+
+import {ROLE_PHRASES_ADMIN} from '/admin/tools/phrases/constants';
 
 
 function runAsSu(fn, {
@@ -33,7 +34,7 @@ function ignoreErrors(fn) {
 runAsSu(() => {
 	ignoreErrors(() => {
 		createRole({
-			name: sanitize(`${app.name}.admin`),
+			name: ROLE_PHRASES_ADMIN,
 			displayName: 'Phrases Administrator',
 			description: 'This role gives permissions to the Phrases Admin application.'
 		});
