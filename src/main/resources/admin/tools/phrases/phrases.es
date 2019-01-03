@@ -19,6 +19,10 @@ import {listLocalesPage} from '/lib/enonic/phrases/admin/locales/listLocalesPage
 import {handlePhrasePost} from '/lib/enonic/phrases/admin/phrases/handlePhrasePost';
 import {listPhrasesPage} from '/lib/enonic/phrases/admin/phrases/listPhrasesPage';
 
+import {localizationsPage} from '/lib/enonic/phrases/admin/localizations/localizationsPage';
+import {editLocalizationPage} from '/lib/enonic/phrases/admin/localizations/editLocalizationPage';
+import {handleLocalizationsPost} from '/lib/enonic/phrases/admin/localizations/handleLocalizationsPost';
+
 
 const router = newRouter();
 
@@ -27,7 +31,7 @@ router.filter((req) => {
 	log.info(toStr({method: req.method}));
 	if (!hasRole(ROLE_PHRASES_ADMIN)) { return { status: 401 }; }
 	const relPath = req.path.replace(PHRASES_TOOL_PATH, ''); log.info(toStr({relPath}));
-	if (!relPath) { return listPhrasesPage(req); }
+	if (!relPath) { return localizationsPage(req); }
 
 	if (relPath.startsWith('/countries')) {
 		if (req.method === 'POST') { return handleCountryPost(req); }
@@ -49,7 +53,17 @@ router.filter((req) => {
 		return listPhrasesPage(req);
 	}
 
-	return listPhrasesPage(req);
+	if (relPath.startsWith('/localizations')) {
+		const locale = relPath.replace(/^\/localizations\//, '');
+		log.info(toStr({locale}));
+		if (locale) {
+			if (req.method === 'POST') { return handleLocalizationsPost(req); }
+			return editLocalizationPage(req);
+		}
+		return localizationsPage(req);
+	}
+
+	return localizationsPage(req);
 });
 
 
