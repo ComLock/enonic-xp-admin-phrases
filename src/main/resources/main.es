@@ -1,38 +1,15 @@
 import {createRole} from '/lib/xp/auth';
-import {run} from '/lib/xp/context';
 import {connect} from '/lib/xp/node';
 import {create as createRepo, createBranch} from '/lib/xp/repo';
 
 import {
-	BRANCH_ID, CT_FOLDER, REPO_ID, ROLE_PHRASES_ADMIN
-} from '/admin/tools/phrases/constants';
-
-
-function runAsSu(fn, {
-	branch = 'master',
-	repository = 'system-repo'
-} = {}) {
-	return run({
-		branch,
-		repository,
-		user: {
-			login: 'su',
-			userStore: 'system'
-		},
-		principals: ['role:system.admin']
-	}, () => fn());
-}
-
-
-function ignoreErrors(fn) {
-	let rv;
-	try {
-		rv = fn();
-	} catch (e) {
-		// no-op
-	}
-	return rv;
-}
+	BRANCH_ID, NT_FOLDER, REPO_ID, ROLE_PHRASES_ADMIN,
+	ROOT_PERMISSION_PHRASES_ADMIN,
+	ROOT_PERMISSION_SYSTEM_ADMIN,
+	ROOT_PERMISSION_SYSTEM_EVERYONE_CAN_READ
+} from '/lib/enonic/phrases/constants';
+import {ignoreErrors} from '/lib/enonic/phrases/ignoreErrors';
+import {runAsSu} from '/lib/enonic/phrases/runAsSu';
 
 
 runAsSu(() => {
@@ -47,32 +24,11 @@ runAsSu(() => {
 	ignoreErrors(() => {
 		createRepo({
 			id: REPO_ID,
-			rootPermissions: [{
-				principal: 'role:system.admin',
-				allow: [
-					'READ',
-					'CREATE',
-					'MODIFY',
-					'DELETE',
-					'PUBLISH',
-					'READ_PERMISSIONS',
-					'WRITE_PERMISSIONS'
-				],
-				deny: []
-			}, {
-				principal: `role:${ROLE_PHRASES_ADMIN}`,
-				allow: [
-					'READ',
-					'CREATE',
-					'MODIFY',
-					'DELETE'
-				],
-				deny: []
-			}, {
-				principal: 'role:system.everyone', //'role:system.authenticated',
-				allow: ['READ'],
-				deny: []
-			}]
+			rootPermissions: [
+				ROOT_PERMISSION_PHRASES_ADMIN,
+				ROOT_PERMISSION_SYSTEM_ADMIN,
+				ROOT_PERMISSION_SYSTEM_EVERYONE_CAN_READ
+			]
 		});
 	});
 
@@ -97,7 +53,7 @@ runAsSu(() => {
 			connection.create({
 				_name,
 				_inheritsPermissions: true,
-				type: CT_FOLDER
+				type: NT_FOLDER
 			});
 		});
 	});

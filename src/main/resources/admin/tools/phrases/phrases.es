@@ -2,19 +2,22 @@ import {toStr} from '/lib/enonic/util';
 import newRouter from '/lib/router';
 import {hasRole} from '/lib/xp/auth';
 
-import {ROLE_PHRASES_ADMIN, TOOL_PATH} from '/admin/tools/phrases/constants';
+import {
+	PHRASES_TOOL_PATH,
+	ROLE_PHRASES_ADMIN
+} from '/lib/enonic/phrases/constants';
 
-import {handleCountryPost} from '/admin/tools/phrases/countries/handleCountryPost';
-import {listCountriesPage} from '/admin/tools/phrases/countries/listCountriesPage';
+import {handleCountryPost} from '/lib/enonic/phrases/admin/countries/handleCountryPost';
+import {listCountriesPage} from '/lib/enonic/phrases/admin/countries/listCountriesPage';
 
-import {handleLanguagePost} from '/admin/tools/phrases/languages/handleLanguagePost';
-import {listLanguagesPage} from '/admin/tools/phrases/languages/listLanguagesPage';
+import {handleLanguagePost} from '/lib/enonic/phrases/admin/languages/handleLanguagePost';
+import {listLanguagesPage} from '/lib/enonic/phrases/admin/languages/listLanguagesPage';
 
-import {handleLocalePost} from '/admin/tools/phrases/locales/handleLocalePost';
-import {listLocalesPage} from '/admin/tools/phrases/locales/listLocalesPage';
+import {handleLocalePost} from '/lib/enonic/phrases/admin/locales/handleLocalePost';
+import {listLocalesPage} from '/lib/enonic/phrases/admin/locales/listLocalesPage';
 
-import {handlePhrasePost} from '/admin/tools/phrases/phrases/handlePhrasePost';
-import {listPhrasesPage} from '/admin/tools/phrases/phrases/listPhrasesPage';
+import {handlePhrasePost} from '/lib/enonic/phrases/admin/phrases/handlePhrasePost';
+import {listPhrasesPage} from '/lib/enonic/phrases/admin/phrases/listPhrasesPage';
 
 
 const router = newRouter();
@@ -23,7 +26,7 @@ const router = newRouter();
 router.filter((req) => {
 	log.info(toStr({method: req.method}));
 	if (!hasRole(ROLE_PHRASES_ADMIN)) { return { status: 401 }; }
-	const relPath = req.path.replace(TOOL_PATH, ''); log.info(toStr({relPath}));
+	const relPath = req.path.replace(PHRASES_TOOL_PATH, ''); log.info(toStr({relPath}));
 	if (!relPath) { return listPhrasesPage(req); }
 
 	if (relPath.startsWith('/countries')) {
